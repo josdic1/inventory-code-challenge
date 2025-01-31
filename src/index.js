@@ -6,7 +6,7 @@ const init = () => {
 
 
   // Fetch list on load
-
+  fetchItems()
 
   // Event Listeners
 
@@ -18,7 +18,11 @@ const init = () => {
 
 
   /** --------------------- API FUNCTIONS --------------------- **/
+  async function fetchItems() {
+    try {
 
+    } catch (error) { console.error(error) }
+  }
 
 
 }
