@@ -1,0 +1,34 @@
+{
+   "items": [
+      {
+         "name": "Microphone Stand",
+         "room": "cellar",
+         "description": "Adjustable stand for holding a microphone securely.",
+         "family": "Audio Equipment"
+      },
+      {
+         "name": "Humidifier",
+         "room": "Josh",
+         "description": "Device that adds moisture to the air to improve humidity levels.",
+         "family": "Home Appliances"
+      },
+      {
+         "name": "Frame TV Mount Kit",
+         "room": "Dining",
+         "description": "Mounting hardware for securely attaching a Frame TV to a wall.",
+         "family": "Electronics Accessories"
+      },
+      {
+         "name": "Adhesives",
+         "room": "cellar",
+         "description": "Various bonding agents used for securing or repairing objects.",
+         "family": "Tools & Hardware"
+      },
+      {
+         "name": "Overhead projector",
+         "room": "cellar",
+         "description": "Device for projecting transparencies onto a screen for presentations.",
+         "family": "Presentation Equipment"
+      }
+   ]
+}
