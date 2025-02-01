@@ -69,6 +69,7 @@ const init = () => {
       existingItem = payload
     } else {
       const payload = {
+        ...formData,
         [name]: value
       }
       formData = payload
@@ -79,10 +80,12 @@ const init = () => {
   function handleSubmitClick(e) {
     e.preventDefault()
     if (inEditMode) {
-      updateItem(existingItem)
+      const updatedItem = existingItem
+      updateItem(updatedItem)
       clearForm()
     }
-    createItem(formData)
+    const newItem = formData
+    createItem(newItem)
     clearForm()
   }
 
@@ -177,20 +180,20 @@ const init = () => {
     } catch (error) { console.error(error) }
   }
 
-  async function createItem(formData) {
+  async function createItem(payload) {
     try {
       const r = await fetch(`http://localhost:3000/items/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       })
       if (!r.ok) {
         throw new Error('error')
       }
       const data = await r.json()
-      const updatedList = items.filter(item => item.id !== id)
+      const updatedList = [...items, data]
       items = updatedList
       renderItemList(updatedList)
     } catch (error) { console.error(error) }
@@ -211,20 +214,22 @@ const init = () => {
     } catch (error) { console.error(error) }
   }
 
-  async function updateItem(existingItem) {
+  async function updateItem(payload) {
     try {
-      const r = await fetch(`http://localhost:3000/items/${existingItem.id}`, {
+      const r = await fetch(`http://localhost:3000/items/${payload.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(existingItem)
+        body: JSON.stringify(payload)
       })
       if (!r.ok) {
         throw new Error('error')
       }
       const data = await r.json()
-      const updatedList = items.filter(item => item.id !== id)
+      const updatedList = items.map(item => item.id === data.id ?
+        data : item
+      )
       items = updatedList
       renderItemList(updatedList)
     } catch (error) { console.error(error) }
