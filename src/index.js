@@ -71,11 +71,10 @@ const init = () => {
     let { id, value } = e.target;
     filterObj = {
       ...filterObj,
-      filterByName: id === 'filterByName' ? filterByName.value : '',
-      filterByName: id === 'filterByType' ? filterByType.value : ''
+      [id]: value
     };
-    const originalList = items
-    const currentList = items.filter(item => item.name.includes(filterObj.filterByName))
+
+    const currentList = items.filter(item => (item.name.includes(filterObj.filterByName)) && (item.family.toLowerCase() === filterObj.filterByType.toLowerCase()))
     renderItemList(currentList)
   }
 
@@ -83,12 +82,9 @@ const init = () => {
     const { id } = e.target
 
     if (id === 'clearFilters') {
-      const clearValName = document.getElementById('filterByName').value = ''
-      const clearValType = document.getElementById('filterByType').value = 'all'
-      filterObj = {
-        filterByName: clearValName,
-        filterByType: clearValType
-      }
+      document.getElementById('filterByName').value = ''
+      document.getElementById('filterByType').value = 'all'
+      renderItemList(items)
     }
   }
 
