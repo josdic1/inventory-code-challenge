@@ -6,22 +6,64 @@ const init = () => {
   const inventoryList = document.getElementById('inventory-list')
 
   // Stateful Variables
+  let inEditMode = false
   let items = []
-  let formData = {}
+  let formData = {
+    name: '',
+    room: '',
+    description: '',
+    family: '',
+  }
   let selectedId = ''
 
   // Fetch list on load
   fetchItems()
 
   // Event Listeners
-
+  inventoryList.addEventListener('click', handleListClick)
 
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
+  function handleListClick(e) {
+    const { id } = e.target
+    const btn = id.split('-')[0]
+    const btnId = id.split('-')[1]
+    selectedId = btnId
+    const itemObj = items.find(item => item.id === btnId)
+
+    if (btn === 'edit') {
+      inEditMode = true
+      formData = {
+        name: itemObj.name,
+        room: itemObj.room,
+        family: itemObj.family,
+        description: itemObj.description
+      }
+      populateForm(itemObj)
+    } else {
+      if (btn === 'del') {
+        console.log(btn)
+      }
+    }
+  }
+
 
 
   /** --------------------- RENDER FUNCTIONS --------------------- **/
-  function renderItemList(listData) {
 
+  function renderForm() {
+    const formHtml =
+      `<label for='nameVal'> Name </label>
+      <input type='text' name='nameInput' placeholder='Name goes here...' />
+      <label for='roomVal'> Room </label>
+       <input type='text' name='roomInput' placeholder='Room goes here...' />
+      <label for='descriptionVal'> Desc. </label>
+       <input type='text' name='descriptionInput' placeholder='Desc. goes here...' />
+      <label for='familyVal'> Type </label>
+      <input type='text' name='familyInput' placeholder='Type goes here...' />`
+  }
+
+
+  function renderItemList(listData) {
     const list = listData.map(item => (
       `<tr>
         <td>${item.id}</td>
@@ -61,6 +103,10 @@ const init = () => {
 
 
 
+  function populateForm(formData) {
+    console.log(formData)
+  }
+
   /** --------------------- API FUNCTIONS --------------------- **/
   async function fetchItems() {
     try {
@@ -71,6 +117,7 @@ const init = () => {
       const data = await r.json()
       items = data
       renderItemList(data)
+      renderForm()
     } catch (error) { console.error(error) }
   }
 
