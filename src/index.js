@@ -3,6 +3,7 @@ const init = () => {
   // DOM Elements
   const inventoryForm = document.getElementById('inventory-form')
   const inventoryItem = document.getElementById('inventory-item')
+  const inventoryFilter = document.getElementById('inventory-filter')
   const inventoryList = document.getElementById('inventory-list')
   const legendEditMode = document.getElementById('edit-mode')
 
@@ -25,6 +26,11 @@ const init = () => {
     family: '',
   }
 
+  let filterObj = {
+    filterByName: '',
+    filterByType: 'all'
+  }
+
   // Fetch list on load
   fetchItems()
 
@@ -32,6 +38,7 @@ const init = () => {
   inventoryList.addEventListener('click', handleListClick)
   inventoryForm.addEventListener('submit', handleSubmitClick)
   inventoryForm.addEventListener('input', handleFormInput)
+
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
 
   let nameVal;
@@ -47,7 +54,7 @@ const init = () => {
     existingItem = payload
     if (btn === 'edit') {
       inEditMode = true
-      legendEditMode.textContent = inEditMode
+      document.getElementById('edit-mode').textContent = inEditMode
       document.getElementById('name').value = payload.name
       document.getElementById('room').value = payload.room
       document.getElementById('description').value = payload.description
@@ -58,6 +65,25 @@ const init = () => {
       }
     }
   }
+
+
+  function handleFilterInput(e) {
+    let { id, value } = e.target;
+    filterObj = { ...filterObj, [id]: value };
+  }
+
+  function handleClearFilter(e) {
+    const { id } = e.target
+    if (id === 'clearFilters') {
+      const clearValName = document.getElementById('filterByName').value = ''
+      const clearValType = document.getElementById('filterByType').value = 'all'
+      filterObj = {
+        filterByName: clearValName,
+        filterByType: clearValType
+      }
+    }
+  }
+
 
   function handleFormInput(e) {
     const { name, value } = e.target
@@ -115,13 +141,29 @@ const init = () => {
     clear.addEventListener('click', clearForm)
   }
 
-  function clearForm() {
-    document.getElementById('name').value = ''
-    document.getElementById('room').value = ''
-    document.getElementById('description').value = ''
-    document.getElementById('family').value = ''
-    inEditMode = false
+
+  function renderFilter() {
+
+    const existingName = filterObj.filterByName || '';
+    const existingType = filterObj.filterByType || 'all';
+
+    const filterHtml =
+      `<div id='filters'>
+      <label> Filters: </label>
+      <input type='text' id='filterByName' name='filterByName' placeholder='Start typing...' value="${existingName}" />
+      <select id='filterByType' name='filterByType'>
+        <option value="all" ${existingType === 'all' ? 'selected' : ''}>Show all</option>
+        <option value="electronics accessories" ${existingType === 'electronics accessories' ? 'selected' : ''}>Electronics Accessories</option>
+      </select>
+      <button type='button' id='clearFilters' name='clearFilters'>⌫</button>
+    </div>`
+
+    inventoryFilter.innerHTML = filterHtml
+    inventoryFilter.addEventListener('input', handleFilterInput)
+    inventoryFilter.addEventListener('change', handleFilterInput)
+    inventoryFilter.addEventListener('click', handleClearFilter)
   }
+
 
 
   function renderItemList(listData) {
@@ -163,7 +205,14 @@ const init = () => {
   }
 
 
-
+  function clearForm() {
+    document.getElementById('name').value = ''
+    document.getElementById('room').value = ''
+    document.getElementById('description').value = ''
+    document.getElementById('family').value = ''
+    inEditMode = false
+    legendEditMode.textContent = inEditMode
+  }
 
 
   /** --------------------- API FUNCTIONS --------------------- **/
@@ -175,6 +224,7 @@ const init = () => {
       }
       const data = await r.json()
       items = data
+      renderFilter()
       renderItemList(data)
       renderForm()
     } catch (error) { console.error(error) }
