@@ -23,6 +23,7 @@ const init = () => {
   inventoryList.addEventListener('click', handleListClick)
 
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
+
   function handleListClick(e) {
     const { id } = e.target
     const btn = id.split('-')[0]
@@ -41,7 +42,7 @@ const init = () => {
       populateForm(itemObj)
     } else {
       if (btn === 'del') {
-        console.log(btn)
+        deleteItem(itemObj.id)
       }
     }
   }
@@ -51,15 +52,33 @@ const init = () => {
   /** --------------------- RENDER FUNCTIONS --------------------- **/
 
   function renderForm() {
+
     const formHtml =
-      `<label for='nameVal'> Name </label>
-      <input type='text' name='nameInput' placeholder='Name goes here...' />
-      <label for='roomVal'> Room </label>
-       <input type='text' name='roomInput' placeholder='Room goes here...' />
-      <label for='descriptionVal'> Desc. </label>
-       <input type='text' name='descriptionInput' placeholder='Desc. goes here...' />
-      <label for='familyVal'> Type </label>
-      <input type='text' name='familyInput' placeholder='Type goes here...' />`
+      `
+      <label formHtml='nameInput'> Name </label>
+      <input type='text' id='name' name='nameInput' placeholder='Name goes here...' />
+      <label formHtml='roomInput'> Room </label>
+       <input type='text' id='room' name='roomInput' placeholder='Room goes here...' />
+      <label formHtml='descriptionInput'> Desc. </label>
+       <input type='text' id='description' name='descriptionInput' placeholder='Desc. goes here...' />
+      <label formHtml='familyInput'> Type </label>
+      <input type='text' id='family' name='familyInput' placeholder='Type goes here...' />
+      <button type='submit'> Submit </button>
+      `
+
+    inventoryForm.innerHTML = formHtml
+  }
+
+  let nameVal;
+  let roomVal;
+  let descriptionVal;
+  let familyVal;
+
+  function populateForm(obj) {
+    nameVal = document.getElementById('name').value = obj.name
+    roomVal = document.getElementById('room').value = obj.room
+    descriptionVal = document.getElementById('description').value = obj.description
+    familyVal = document.getElementById('family').value = obj.family
   }
 
 
@@ -101,12 +120,6 @@ const init = () => {
     inventoryList.innerHTML = inventoryTable
   }
 
-
-
-  function populateForm(formData) {
-    console.log(formData)
-  }
-
   /** --------------------- API FUNCTIONS --------------------- **/
   async function fetchItems() {
     try {
@@ -118,6 +131,21 @@ const init = () => {
       items = data
       renderItemList(data)
       renderForm()
+    } catch (error) { console.error(error) }
+  }
+
+  async function deleteItem(id) {
+    try {
+      const r = await fetch(`http://localhost:3000/items/${id}`, {
+        method: 'DELETE'
+      })
+      if (!r.ok) {
+        throw new Error('error')
+      }
+      const data = await r.json()
+      const updatedList = items.filter(item => item.id !== id)
+      items = updatedList
+      renderItemList(updatedList)
     } catch (error) { console.error(error) }
   }
 

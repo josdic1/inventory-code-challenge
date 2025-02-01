@@ -1,34 +1,46 @@
 {
-   "items": [
-      {
-         "name": "Microphone Stand",
-         "room": "cellar",
-         "description": "Adjustable stand for holding a microphone securely.",
-         "family": "Audio Equipment"
-      },
-      {
-         "name": "Humidifier",
-         "room": "Josh",
-         "description": "Device that adds moisture to the air to improve humidity levels.",
-         "family": "Home Appliances"
-      },
-      {
-         "name": "Frame TV Mount Kit",
-         "room": "Dining",
-         "description": "Mounting hardware for securely attaching a Frame TV to a wall.",
-         "family": "Electronics Accessories"
-      },
-      {
-         "name": "Adhesives",
-         "room": "cellar",
-         "description": "Various bonding agents used for securing or repairing objects.",
-         "family": "Tools & Hardware"
-      },
-      {
-         "name": "Overhead projector",
-         "room": "cellar",
-         "description": "Device for projecting transparencies onto a screen for presentations.",
-         "family": "Presentation Equipment"
-      }
-   ]
+  "items": [
+    {
+      "name": "Frame TV Mount Kit",
+      "room": "Dining",
+      "description": "Mounting hardware for securely attaching a Frame TV to a wall.",
+      "family": "Electronics Accessories",
+      "id": "7d79"
+    },
+    {
+      "name": "Adhesives",
+      "room": "cellar",
+      "description": "Various bonding agents used for securing or repairing objects.",
+      "family": "Tools & Hardware",
+      "id": "7f99"
+    },
+    {
+      "name": "Dehumidifier",
+      "room": "Josh",
+      "description": "Device that reduces humidity levels in the air by removing excess moisture.",
+      "family": "Home Appliances",
+      "id": "e50b"
+    },
+    {
+      "name": "Surge Protector",
+      "room": "Dining",
+      "description": "A power strip that protects electronic devices from voltage spikes.",
+      "family": "Electronics Accessories",
+      "id": "6ea9"
+    },
+    {
+      "name": "Cordless Drill",
+      "room": "cellar",
+      "description": "Battery-powered drill for drilling holes and driving screws.",
+      "family": "Tools & Hardware",
+      "id": "3d05"
+    },
+    {
+      "name": "Portable Projector Screen",
+      "room": "cellar",
+      "description": "Foldable screen used for displaying projections from a projector.",
+      "family": "Presentation Equipment",
+      "id": "197e"
+    }
+  ]
 }
