@@ -9,13 +9,21 @@ const init = () => {
   // Stateful Variables
   let inEditMode = false
   let items = []
+
   let formData = {
     name: '',
     room: '',
     description: '',
     family: '',
   }
-  let selectedId = ''
+
+  let existingItem = {
+    id: '',
+    name: '',
+    room: '',
+    description: '',
+    family: '',
+  }
 
   // Fetch list on load
   fetchItems()
@@ -26,36 +34,56 @@ const init = () => {
   inventoryForm.addEventListener('input', handleFormInput)
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
 
+  let nameVal;
+  let roomVal;
+  let descriptionVal;
+  let familyVal;
+
   function handleListClick(e) {
     const { id } = e.target
     const btn = id.split('-')[0]
     const btnId = id.split('-')[1]
-    const itemObj = items.find(item => item.id === btnId)
-
+    const payload = items.find(item => item.id === btnId)
+    existingItem = payload
     if (btn === 'edit') {
       inEditMode = true
-      selectedId = btnId
       legendEditMode.textContent = inEditMode
-      document.getElementById('name').value = itemObj.name
-      document.getElementById('room').value = itemObj.room
-      document.getElementById('description').value = itemObj.description
-      document.getElementById('family').value = itemObj.family
-
+      document.getElementById('name').value = payload.name
+      document.getElementById('room').value = payload.room
+      document.getElementById('description').value = payload.description
+      document.getElementById('family').value = payload.family
     } else {
       if (btn === 'del') {
-        deleteItem(itemObj.id)
+        deleteItem(existingItem.id)
       }
     }
   }
 
   function handleFormInput(e) {
-
+    const { name, value } = e.target
+    if (inEditMode) {
+      const payload = {
+        ...existingItem,
+        [name]: value
+      }
+      existingItem = payload
+    } else {
+      const payload = {
+        [name]: value
+      }
+      formData = payload
+    }
   }
 
 
   function handleSubmitClick(e) {
     e.preventDefault()
-    console.log(formData)
+    if (inEditMode) {
+      updateItem(existingItem)
+      clearForm()
+    }
+    createItem(formData)
+    clearForm()
   }
 
 
@@ -67,13 +95,13 @@ const init = () => {
     const formHtml =
       `
       <label formHtml='nameInput'> Name </label>
-      <input type='text' id='name' name='nameInput' placeholder='Name goes here...' />
+      <input type='text' id='name' name='name' placeholder='Name goes here...' />
       <label formHtml='roomInput'> Room </label>
-       <input type='text' id='room' name='roomInput' placeholder='Room goes here...' />
+       <input type='text' id='room' name='room' placeholder='Room goes here...' />
       <label formHtml='descriptionInput'> Desc. </label>
-       <input type='text' id='description' name='descriptionInput' placeholder='Desc. goes here...' />
+       <input type='text' id='description' name='description' placeholder='Desc. goes here...' />
       <label formHtml='familyInput'> Type </label>
-      <input type='text' id='family' name='familyInput' placeholder='Type goes here...' />
+      <input type='text' id='family' name='family' placeholder='Type goes here...' />
       <button type='submit' id='submit'> Submit </button>
          <button type='button' id='clear'> Clear </button>
       `
@@ -81,16 +109,16 @@ const init = () => {
     inventoryForm.innerHTML = formHtml
 
     const clear = document.getElementById('clear')
-    clear.addEventListener('click', function () {
-      document.getElementById('name').value = ''
-      document.getElementById('room').value = ''
-      document.getElementById('description').value = ''
-      document.getElementById('family').value = ''
-      inEditMode = false
-    })
+    clear.addEventListener('click', clearForm)
   }
 
-
+  function clearForm() {
+    document.getElementById('name').value = ''
+    document.getElementById('room').value = ''
+    document.getElementById('description').value = ''
+    document.getElementById('family').value = ''
+    inEditMode = false
+  }
 
 
   function renderItemList(listData) {
@@ -149,10 +177,48 @@ const init = () => {
     } catch (error) { console.error(error) }
   }
 
+  async function createItem(formData) {
+    try {
+      const r = await fetch(`http://localhost:3000/items/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      if (!r.ok) {
+        throw new Error('error')
+      }
+      const data = await r.json()
+      const updatedList = items.filter(item => item.id !== id)
+      items = updatedList
+      renderItemList(updatedList)
+    } catch (error) { console.error(error) }
+  }
+
   async function deleteItem(id) {
     try {
       const r = await fetch(`http://localhost:3000/items/${id}`, {
         method: 'DELETE'
+      })
+      if (!r.ok) {
+        throw new Error('error')
+      }
+      const data = await r.json()
+      const updatedList = items.filter(item => item.id !== id)
+      items = updatedList
+      renderItemList(updatedList)
+    } catch (error) { console.error(error) }
+  }
+
+  async function updateItem(existingItem) {
+    try {
+      const r = await fetch(`http://localhost:3000/items/${existingItem.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(existingItem)
       })
       if (!r.ok) {
         throw new Error('error')
