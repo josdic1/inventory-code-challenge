@@ -4,6 +4,7 @@ const init = () => {
   const inventoryForm = document.getElementById('inventory-form')
   const inventoryItem = document.getElementById('inventory-item')
   const inventoryList = document.getElementById('inventory-list')
+  const legendEditMode = document.getElementById('edit-mode')
 
   // Stateful Variables
   let inEditMode = false
@@ -21,7 +22,6 @@ const init = () => {
 
   // Event Listeners
   inventoryList.addEventListener('click', handleListClick)
-  inventoryForm.addEventListener('click', clearForm)
   inventoryForm.addEventListener('submit', handleSubmitClick)
   inventoryForm.addEventListener('input', handleFormInput)
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
@@ -30,18 +30,17 @@ const init = () => {
     const { id } = e.target
     const btn = id.split('-')[0]
     const btnId = id.split('-')[1]
-    selectedId = btnId
     const itemObj = items.find(item => item.id === btnId)
 
     if (btn === 'edit') {
       inEditMode = true
-      formData = {
-        name: itemObj.name,
-        room: itemObj.room,
-        family: itemObj.family,
-        description: itemObj.description
-      }
-      populateForm(itemObj)
+      selectedId = btnId
+      legendEditMode.textContent = inEditMode
+      document.getElementById('name').value = itemObj.name
+      document.getElementById('room').value = itemObj.room
+      document.getElementById('description').value = itemObj.description
+      document.getElementById('family').value = itemObj.family
+
     } else {
       if (btn === 'del') {
         deleteItem(itemObj.id)
@@ -50,8 +49,7 @@ const init = () => {
   }
 
   function handleFormInput(e) {
-    const { name, value } = e.target
-    console.log(name, value)
+
   }
 
 
@@ -81,19 +79,18 @@ const init = () => {
       `
 
     inventoryForm.innerHTML = formHtml
+
+    const clear = document.getElementById('clear')
+    clear.addEventListener('click', function () {
+      document.getElementById('name').value = ''
+      document.getElementById('room').value = ''
+      document.getElementById('description').value = ''
+      document.getElementById('family').value = ''
+      inEditMode = false
+    })
   }
 
-  let nameVal;
-  let roomVal;
-  let descriptionVal;
-  let familyVal;
 
-  function populateForm(obj) {
-    nameVal = document.getElementById('name').value = obj.name
-    roomVal = document.getElementById('room').value = obj.room
-    descriptionVal = document.getElementById('description').value = obj.description
-    familyVal = document.getElementById('family').value = obj.family
-  }
 
 
   function renderItemList(listData) {
@@ -134,13 +131,8 @@ const init = () => {
     inventoryList.innerHTML = inventoryTable
   }
 
-  function clearForm() {
-    document.getElementById('name').value = ''
-    document.getElementById('room').value = ''
-    document.getElementById('description').value = ''
-    document.getElementById('family').value = ''
-    inEditMode = false
-  }
+
+
 
 
   /** --------------------- API FUNCTIONS --------------------- **/
