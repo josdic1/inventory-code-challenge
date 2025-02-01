@@ -25,9 +25,22 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center horizontally */
   min-width: 320px;
   min-height: 100vh;
+  justify-content: flex-start; /* Align everything at the top */
+}
+
+form {
+  width: 100%;  /* Make the form take full width */
+  max-width: 400px; /* Restrict width for readability */
+  display: flex;
+  flex-direction: column; /* Stack form fields */
+  gap: 1rem; /* Adds spacing between form fields */
+  padding: 1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
 }
 
 h1 {

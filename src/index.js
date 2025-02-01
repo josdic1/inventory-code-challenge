@@ -21,7 +21,9 @@ const init = () => {
 
   // Event Listeners
   inventoryList.addEventListener('click', handleListClick)
-
+  inventoryForm.addEventListener('click', clearForm)
+  inventoryForm.addEventListener('submit', handleSubmitClick)
+  inventoryForm.addEventListener('input', handleFormInput)
   /** --------------------- HANDLER FUNCTIONS --------------------- **/
 
   function handleListClick(e) {
@@ -47,6 +49,17 @@ const init = () => {
     }
   }
 
+  function handleFormInput(e) {
+    const { name, value } = e.target
+    console.log(name, value)
+  }
+
+
+  function handleSubmitClick(e) {
+    e.preventDefault()
+    console.log(formData)
+  }
+
 
 
   /** --------------------- RENDER FUNCTIONS --------------------- **/
@@ -63,7 +76,8 @@ const init = () => {
        <input type='text' id='description' name='descriptionInput' placeholder='Desc. goes here...' />
       <label formHtml='familyInput'> Type </label>
       <input type='text' id='family' name='familyInput' placeholder='Type goes here...' />
-      <button type='submit'> Submit </button>
+      <button type='submit' id='submit'> Submit </button>
+         <button type='button' id='clear'> Clear </button>
       `
 
     inventoryForm.innerHTML = formHtml
@@ -119,6 +133,15 @@ const init = () => {
 
     inventoryList.innerHTML = inventoryTable
   }
+
+  function clearForm() {
+    document.getElementById('name').value = ''
+    document.getElementById('room').value = ''
+    document.getElementById('description').value = ''
+    document.getElementById('family').value = ''
+    inEditMode = false
+  }
+
 
   /** --------------------- API FUNCTIONS --------------------- **/
   async function fetchItems() {
