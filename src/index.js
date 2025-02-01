@@ -69,11 +69,19 @@ const init = () => {
 
   function handleFilterInput(e) {
     let { id, value } = e.target;
-    filterObj = { ...filterObj, [id]: value };
+    filterObj = {
+      ...filterObj,
+      filterByName: id === 'filterByName' ? filterByName.value : '',
+      filterByName: id === 'filterByType' ? filterByType.value : ''
+    };
+    const originalList = items
+    const currentList = items.filter(item => item.name.includes(filterObj.filterByName))
+    renderItemList(currentList)
   }
 
   function handleClearFilter(e) {
     const { id } = e.target
+
     if (id === 'clearFilters') {
       const clearValName = document.getElementById('filterByName').value = ''
       const clearValType = document.getElementById('filterByType').value = 'all'
